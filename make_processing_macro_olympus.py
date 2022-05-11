@@ -16,7 +16,7 @@ def get_file_list(num_files):
     """
 
 
-def make_macro_3_channels(data_dir, save_dir, file_name_prefixes, file_nums, macro_save_dir):
+def make_macro_3_channels(data_dir, save_dir, file_name_prefixes, file_nums, macro_save_dir,tif_name):
     """
 
     :param data_dir: directory with .oir files
@@ -35,16 +35,21 @@ def make_macro_3_channels(data_dir, save_dir, file_name_prefixes, file_nums, mac
     bio_import = 'run("Bio-Formats Importer", "open=["+ input + filename +"] view=Hyperstack split_channels stack_order=XYCZT");'
     run = 'run("Z Project...", "projection=[Max Intensity]");'
     close = 'close();'
+
+    i=0
     for file_name_prefix in file_name_prefixes:
+
         for file_num in file_nums:
             filename = 'filename="{}{}.oir"'.format(file_name_prefix, file_num)
-            two = 'selectWindow("{}{}.oir - C=0");'.format(file_name_prefix, file_num)
-            four = 'saveAs("Tiff", "{}MAX_{}{}.oir.tif");'.format(save_dir, file_name_prefix, file_num)
+            two = 'selectWindow("{}{}{}.oir - C=0");'.format(data_dir,file_name_prefix, file_num) # For windows, data_dir is needed. Not for MacOS
+            four = 'saveAs("Tiff", "{}MAX_{}{} {}.tif");'.format(save_dir, file_name_prefix, file_num, tif_name[i])
         
 
             command = inp+"\n"+filename+"\n"+bio_import+"\n"+two+"\n"+run+"\n"+four+"\n"+close+"\n"+close
     
             file_object.write(command+"\n")
+
+        i+=1
 
     file_object.close()
     """
