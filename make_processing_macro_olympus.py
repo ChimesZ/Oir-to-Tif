@@ -42,7 +42,7 @@ def make_macro_3_channels(data_dir, save_dir, file_name_prefixes, file_nums, mac
         for file_num in file_nums:
             filename = 'filename="{}{}.oir"'.format(file_name_prefix, file_num)
             two = 'selectWindow("{}{}{}.oir - C=0");'.format(data_dir,file_name_prefix, file_num) # For windows, data_dir is needed. Not for MacOS
-            four = 'saveAs("Tiff", "{}MAX_{}{} {}.tif");'.format(save_dir, file_name_prefix, file_num, tif_name[i])
+            four = 'saveAs("Tiff", "{}MAX_DG_{} {}.tif");'.format(save_dir, file_num, tif_name[i])
         
 
             command = inp+"\n"+filename+"\n"+bio_import+"\n"+two+"\n"+run+"\n"+four+"\n"+close+"\n"+close
