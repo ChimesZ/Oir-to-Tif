@@ -1,0 +1,36 @@
+---
+title: "Fos-mch-38"
+author: "Zihan Zhong"
+date: '2022-05-12'
+output: html_document
+---
+
+```{r}
+library(ggplot2)
+data <- read.csv("Fos-mch-38.csv")
+data <- data[-c(58,94,128),]
+type <- c()
+m <- 6
+n <- 5
+for (i in 1:nrow(data)){
+  if (data[i,m]==1&&data[i,n]==1){
+    type[i] <- "Train+Sleeping"
+  }
+  else if(data[i,m]==1 && data[i,n]==0){
+    type[i] <- "Train"
+  }
+  else if(data[i,m]==0&&data[i,n]==1){
+    type[i] <- "Sleeping"
+  }
+  else if(data[i,m]==0&&data[i,n]==0){
+    type[i] <- "None"
+  }
+  else{}
+}
+data <- cbind(data,type)
+```
+```{r}
+cl <- c("gray","red","gray","orange")
+ggplot(data=data,aes(x=X,y=Y,color=type)) + geom_point(size=3)+ scale_color_manual(values = cl)+scale_y_continuous(breaks = NULL)+scale_x_continuous(breaks = NULL)+xlab(NULL)+ylab(NULL)+theme()
+
+```
