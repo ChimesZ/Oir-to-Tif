@@ -1,3 +1,6 @@
+import os
+import re
+
 def get_file_list(num_files):
     """
     formats number of files in olympus format
@@ -53,6 +56,7 @@ def make_macro_3_channels(data_dir, save_dir, file_name_prefixes, file_nums, mac
 
     file_object.close()
     """
+    This part is for multichannel processing
     two_1 = 'selectWindow("{}{}.oir - C=1");'.format(file_name_prefix, file_num)
         four_1 = 'saveAs("Tiff", "{}MAX_{}{}.oir - C=1.tif");'.format(save_dir, file_name_prefix, file_num)
         two_2 = 'selectWindow("{}{}.oir - C=2");'.format(file_name_prefix, file_num)
@@ -60,3 +64,42 @@ def make_macro_3_channels(data_dir, save_dir, file_name_prefixes, file_nums, mac
                    two_1+"\n"+run+"\n"+four_1+"\n"+close+"\n"+close+"\n"+ \
                   two_2+"\n"+run+"\n"+four_2+"\n"+close+"\n"+close
     """
+def get_name_list(path):   
+    name_list=os.listdir(path)
+    rule = r"000\d.oir"
+    repl = ""
+    for i in range(0,len(name_list)):
+        name_list[i] = re.sub(rule, repl, name_list[i],count=0,flags=0)
+    name = list(set(name_list))
+    name.sort(key = name_list.index)
+    return name
+
+def get_tif_name(names):
+    pattern = r"(?<=[(green)(red)]\s).+(?=_A01)"
+    re.findall(pattern,names[12])
+    tif_labels=[]
+    for name in names:
+        tif_labels.extend(re.findall(pattern,name))
+    tif_labels
+    tif_names = []
+    for tif_label in tif_labels:
+        if re.findall("\d",tif_label):
+            tif_names.append("{}_recall_".format(re.findall(r"\d[a-z][a-z]",tif_label)[0]))
+        elif re.findall("TR",tif_label):
+            tif_names.append("ref_")
+        elif re.findall("baseline",tif_label):
+            tif_names.append("0th_recall_")
+        elif re.findall("NC",tif_label):
+            tif_names.append("10th_recall_")
+        elif re.findall("remote",tif_label):
+            tif_names.append("11th_recall_")
+        else:
+            tif_names.append(input(tif_label))
+    i=0
+    for name in names:
+        if re.findall("green",name):
+            tif_names[i]+="green"
+        else:
+            tif_names[i]+="red"
+        i+=1
+    return(tif_names)
